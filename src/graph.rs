@@ -106,4 +106,38 @@ impl<'a> Graph<'a> {
             b.y += -ydelta * f;
         }
     }
+
+    pub fn normalize(&mut self) {
+        let mut minx = self.nodes.iter().next().unwrap().1.x;
+        let mut miny = self.nodes.iter().next().unwrap().1.y;
+        let mut maxx = self.nodes.iter().next().unwrap().1.x;
+        let mut maxy = self.nodes.iter().next().unwrap().1.y;
+
+        for node in self.nodes.iter() {
+            if node.1.x < minx {
+                minx = node.1.x;
+            }
+            if node.1.y < miny {
+                miny = node.1.y;
+            }
+            if node.1.x > maxx {
+                maxx = node.1.x;
+            }
+            if node.1.y > maxy {
+                maxy = node.1.y;
+            }
+        }
+
+        for node in self.nodes.iter_mut() {
+            node.1.x -= minx;
+            node.1.y -= miny;
+            node.1.x *= 1.0 / (maxx - minx);
+            node.1.y *= 1.0 / (maxy - miny);
+
+            node.1.x *= 0.8;
+            node.1.y *= 0.8;
+            node.1.x += 0.1;
+            node.1.y += 0.1;
+        }
+    }
 }
