@@ -53,4 +53,57 @@ impl<'a> Graph<'a> {
 
         self.edges.push((a, b, visible));
     }
+
+    pub fn iterate(&mut self) {
+        let mut node_data: Vec<(f32, f32, &str)> = Vec::new();
+
+        for node in &self.nodes {
+            node_data.push((node.1.x, node.1.y, node.1.name));
+        }
+
+        // Simulate repulsion
+        for mut node in self.nodes.iter_mut() {
+            for other in &node_data {
+                if node.1.name == other.2 {
+                    continue;
+                }
+
+                let xdist = node.1.x - other.0;
+                let ydist = node.1.y - other.1;
+                let dist_2 = xdist * xdist + ydist * ydist;
+                let force = 0.0003 / dist_2;
+
+                let x_component = xdist / dist_2.sqrt();
+                let y_component = ydist / dist_2.sqrt();
+
+                node.1.x += force * x_component;
+                node.1.y += force * y_component;
+            }
+        }
+
+        // Simulate Hooke's law
+        for edge in self.edges.iter() {
+            let length = 0.3;
+
+            let a = self.nodes.get(edge.0).unwrap();
+            let b = self.nodes.get(edge.1).unwrap();
+            let xdelta = a.x - b.x;
+            let ydelta = a.y - b.y;
+            let dist = (xdelta * xdelta + ydelta * ydelta).sqrt();
+
+            let x = dist - length;
+
+            let f = -0.1 * x;
+
+            let a = self.nodes.get_mut(edge.0).unwrap();
+
+            a.x += xdelta * f;
+            a.y += ydelta * f;
+
+            let b = self.nodes.get_mut(edge.1).unwrap();
+
+            b.x += -xdelta * f;
+            b.y += -ydelta * f;
+        }
+    }
 }
