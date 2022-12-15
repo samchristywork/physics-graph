@@ -1,4 +1,4 @@
-use rand::SeedableRng;
+use rand::{Rng, SeedableRng};
 use rand_pcg::Lcg64Xsh32;
 use rand_pcg::Pcg32;
 use std::collections::HashMap;
@@ -23,5 +23,34 @@ impl<'a> Graph<'a> {
             edges: Vec::new(),
             rng: Pcg32::seed_from_u64(48),
         }
+    }
+
+    pub fn register_edge(&mut self, a: &'a str, b: &'a str, visible: bool) {
+        let x1 = self.rng.gen_range(0.0..1.0);
+        let x2 = self.rng.gen_range(0.0..1.0);
+        let y1 = self.rng.gen_range(0.0..1.0);
+        let y2 = self.rng.gen_range(0.0..1.0);
+
+        self.nodes.insert(
+            a,
+            Node {
+                x: x1,
+                y: y1,
+                name: a,
+                visited: false,
+            },
+        );
+
+        self.nodes.insert(
+            b,
+            Node {
+                x: x2,
+                y: y2,
+                name: b,
+                visited: false,
+            },
+        );
+
+        self.edges.push((a, b, visible));
     }
 }
