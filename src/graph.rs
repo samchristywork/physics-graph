@@ -138,7 +138,7 @@ impl<'a> Graph<'a> {
         }
     }
 
-    pub fn is_fully_connected(&mut self) -> Result<(), Vec<&str>> {
+    pub fn is_fully_connected(&mut self) -> Result<(), (Vec<&str>, Vec<&str>)> {
         for node in self.nodes.iter_mut() {
             node.1.visited = false;
         }
@@ -173,15 +173,22 @@ impl<'a> Graph<'a> {
             }
         }
 
-        let mut ret = Vec::new();
+        let mut unconnected = Vec::new();
         for node in &self.nodes {
             if node.1.visited == false {
-                ret.push(*node.0);
+                unconnected.push(*node.0);
             }
         }
 
-        if ret.len() > 0 {
-            return std::result::Result::Err(ret);
+        let mut connected = Vec::new();
+        for node in &self.nodes {
+            if node.1.visited == true {
+                connected.push(*node.0);
+            }
+        }
+
+        if unconnected.len() > 0 {
+            return std::result::Result::Err((connected, unconnected));
         }
 
         std::result::Result::Ok(())

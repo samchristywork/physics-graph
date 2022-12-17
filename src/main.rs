@@ -8,7 +8,8 @@ pub mod node;
 pub mod svg;
 pub mod vector;
 
-fn draw_graph(g: &graph::Graph, text_color: &str, edge_color: &str) -> String {
+
+fn draw_graph(g: &graph::Graph) -> String {
     let mut svg = String::new();
 
     for edge in &g.edges {
@@ -56,8 +57,14 @@ fn main() {
 
     match g.is_fully_connected() {
         Ok(_) => {}
-        Err(e) => panic!("Graph not fully connected! Missing {:?}.", e),
-    }
+        Err(e) => eprintln!(
+            "WARNING: Graph not fully connected!\n\
+            \n\
+            Connected nodes: {:?}\n\
+            Disconnected nodes:{:?}",
+            e.0, e.1
+        ),
+    };
 
     let mut output_file = File::create("out.svg").unwrap();
 
@@ -70,7 +77,7 @@ fn main() {
 
     g.normalize();
 
-    svg += draw_graph(&g, "blue", "black").as_str();
+    svg += draw_graph(&g).as_str();
 
     svg += svg::draw_box(0.0, 0.0, 1.0, 1.0, 0.01, "red").as_str();
 
