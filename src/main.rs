@@ -1,3 +1,4 @@
+use std::env;
 use std::fs::File;
 use std::io::Read;
 use std::io::Write;
@@ -7,7 +8,9 @@ pub mod svg;
 pub mod vector;
 
 fn main() {
-    let mut input_file = File::open("input.txt").unwrap();
+    let filename = env::args().nth(1).unwrap();
+
+    let mut input_file = File::open(filename).unwrap();
     let mut contents = String::new();
     input_file.read_to_string(&mut contents).unwrap();
 
