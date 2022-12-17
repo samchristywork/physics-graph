@@ -4,6 +4,7 @@ use std::io::Read;
 use std::io::Write;
 
 pub mod graph;
+pub mod node;
 pub mod svg;
 pub mod vector;
 
@@ -21,18 +22,14 @@ fn draw_graph(g: &graph::Graph, text_color: &str, edge_color: &str) -> String {
         svg += svg::draw_line(
             vector::Vector { x: a.x, y: a.y },
             vector::Vector { x: b.x, y: b.y },
-            edge_color,
+            "black",
         )
         .as_str();
     }
 
     for key in &g.nodes {
         let node = key.1;
-        svg += format!(
-            "{}\n",
-            svg::draw_label(node.x, node.y, 0.1, text_color, &node.name)
-        )
-        .as_str();
+        svg += node.draw().as_str();
     }
 
     svg

@@ -3,12 +3,7 @@ use rand_pcg::Lcg64Xsh32;
 use rand_pcg::Pcg32;
 use std::collections::HashMap;
 
-pub struct Node<'a> {
-    pub x: f32,
-    pub y: f32,
-    pub name: &'a str,
-    visited: bool,
-}
+use crate::node::Node;
 
 pub struct Graph<'a> {
     pub nodes: HashMap<&'a str, Node<'a>>,
