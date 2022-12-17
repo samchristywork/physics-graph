@@ -12,7 +12,7 @@ impl Node<'_> {
         let text_color = "red";
         format!(
             "{}\n",
-            svg::draw_label(self.x, self.y, 0.1, text_color, &self.name)
+            svg::draw_label_multiline(self.x, self.y, 0.05, text_color, &self.name)
         )
     }
 }

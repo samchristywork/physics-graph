@@ -45,8 +45,32 @@ pub fn draw_box(x: f32, y: f32, width: f32, height: f32, stroke: f32, color: &st
 #[must_use]
 pub fn draw_label(x: f32, y: f32, font_size: f32, font_color: &str, label: &str) -> String {
     format!(
-        "<text x=\"{x}\" y=\"{y}\" font-size=\"{font_size}\" fill=\"{font_color}\">{label}</text>"
+        "<text x=\"{x}\" y=\"{y}\" text-anchor=\"middle\" font-size=\"{font_size}\" \
+        fill=\"{font_color}\">{label}</text>"
     )
+}
+
+#[must_use]
+pub fn draw_label_multiline(
+    x: f32,
+    y: f32,
+    font_size: f32,
+    font_color: &str,
+    label: &str,
+) -> String {
+    let mut y = y;
+    let mut svg = String::new();
+
+    for line in label.split("\\n") {
+        svg += format!(
+            "<text x=\"{x}\" y=\"{y}\" text-anchor=\"middle\" font-size=\"{font_size}\" \
+            fill=\"{font_color}\">{line}</text>"
+        )
+        .as_str();
+        y += font_size;
+    }
+
+    svg
 }
 
 #[must_use]
