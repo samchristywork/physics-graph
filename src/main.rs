@@ -7,6 +7,37 @@ pub mod graph;
 pub mod svg;
 pub mod vector;
 
+fn draw_graph(g: &graph::Graph, text_color: &str, edge_color: &str) -> String {
+    let mut svg = String::new();
+
+    for edge in &g.edges {
+        if edge.2 == false {
+            continue;
+        }
+
+        let a = g.nodes.get(edge.0).unwrap();
+        let b = g.nodes.get(edge.1).unwrap();
+
+        svg += svg::draw_line(
+            vector::Vector { x: a.x, y: a.y },
+            vector::Vector { x: b.x, y: b.y },
+            edge_color,
+        )
+        .as_str();
+    }
+
+    for key in &g.nodes {
+        let node = key.1;
+        svg += format!(
+            "{}\n",
+            svg::draw_label(node.x, node.y, 0.1, text_color, &node.name)
+        )
+        .as_str();
+    }
+
+    svg
+}
+
 fn main() {
     let filename = env::args().nth(1).unwrap();
 
@@ -34,6 +65,14 @@ fn main() {
 
     let mut svg = String::new();
     svg += format!("{}\n", svg::start(0.0, 0.0, 1.0, 1.0)).as_str();
+
+    for _ in 1..2000 {
+        g.iterate();
+    }
+
+    g.normalize();
+
+    svg += draw_graph(&g, "blue", "black").as_str();
 
     svg += svg::draw_box(0.0, 0.0, 1.0, 1.0, 0.01, "red").as_str();
 
