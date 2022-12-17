@@ -140,4 +140,53 @@ impl<'a> Graph<'a> {
             node.1.y += 0.1;
         }
     }
+
+    pub fn is_fully_connected(&mut self) -> Result<(), Vec<&str>> {
+        for node in self.nodes.iter_mut() {
+            node.1.visited = false;
+        }
+
+        self.nodes.iter_mut().next().unwrap().1.visited = true;
+
+        loop {
+            let mut cont = false;
+
+            for edge in self.edges.iter_mut() {
+                let a = self.nodes.get(edge.0).unwrap();
+                let b = self.nodes.get(edge.1).unwrap();
+
+                if a.visited && b.visited {
+                    continue;
+                }
+
+                if !a.visited && !b.visited {
+                    continue;
+                }
+
+                let a = self.nodes.get_mut(edge.0).unwrap();
+                a.visited = true;
+
+                let b = self.nodes.get_mut(edge.1).unwrap();
+                b.visited = true;
+                cont = true;
+            }
+
+            if !cont {
+                break;
+            }
+        }
+
+        let mut ret = Vec::new();
+        for node in &self.nodes {
+            if node.1.visited == false {
+                ret.push(*node.0);
+            }
+        }
+
+        if ret.len() > 0 {
+            return std::result::Result::Err(ret);
+        }
+
+        std::result::Result::Ok(())
+    }
 }
