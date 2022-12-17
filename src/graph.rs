@@ -62,6 +62,8 @@ impl<'a> Graph<'a> {
         }
 
         // Simulate repulsion
+        node_data.sort_by(|a, b| a.partial_cmp(b).unwrap());
+
         for mut node in self.nodes.iter_mut() {
             for other in &node_data {
                 if node.1.name == other.2 {
