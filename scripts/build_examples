@@ -1,0 +1,11 @@
+#!/bin/bash
+
+cargo run -- examples/circle.graph; mv out.svg screenshots/circle.svg
+cargo run -- examples/complex.graph; mv out.svg screenshots/complex.svg
+cargo run -- examples/invisible_edge.graph; mv out.svg screenshots/invisible_edge.svg
+cargo run -- examples/medium.graph; mv out.svg screenshots/medium.svg
+cargo run -- examples/pie.graph; mv out.svg screenshots/pie.svg
+cargo run -- examples/quad.graph; mv out.svg screenshots/quad.svg
+cargo run -- examples/random.graph; mv out.svg screenshots/random.svg
+cargo run -- examples/simple.graph; mv out.svg screenshots/simple.svg
+cargo run -- examples/tri.graph; mv out.svg screenshots/tri.svg
