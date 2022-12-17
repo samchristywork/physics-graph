@@ -51,6 +51,7 @@ fn main() {
         if line != "" {
             match line.split("-").collect::<Vec<&str>>()[..] {
                 [a, b] => g.register_edge(a, b, true),
+                [a, b, _] => g.register_edge(a, b, false),
                 _ => panic!("Failed to process text file."),
             }
         }
