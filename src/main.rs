@@ -47,8 +47,8 @@ fn main() {
     for line in contents.split("\n") {
         if line != "" {
             match line.split("-").collect::<Vec<&str>>()[..] {
-                [a, b] => g.register_edge(a, b, true),
-                [a, b, _] => g.register_edge(a, b, false),
+                [a, b] => g.register_edge(a, b, ""),
+                [a, b, c] => g.register_edge(a, b, c),
                 _ => panic!("Failed to process text file."),
             }
         }

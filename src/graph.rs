@@ -20,7 +20,23 @@ impl<'a> Graph<'a> {
         }
     }
 
-    pub fn register_edge(&mut self, a: &'a str, b: &'a str, visible: bool) {
+    pub fn register_edge(&mut self, a: &'a str, b: &'a str, c: &'a str) {
+        let mut visible = true;
+
+        if c != "" {
+            let json: serde_json::Value = serde_json::from_str(c).unwrap();
+
+            match json.get("visible") {
+                Some(x) => match x.as_bool() {
+                    Some(x) => visible = x,
+                    None => {}
+                },
+                None => {}
+            }
+
+            println!("{:?}", json);
+        }
+
         let x1 = self.rng.gen_range(0.0..1.0);
         let x2 = self.rng.gen_range(0.0..1.0);
         let y1 = self.rng.gen_range(0.0..1.0);
