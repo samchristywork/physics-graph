@@ -8,7 +8,6 @@ pub mod node;
 pub mod svg;
 pub mod vector;
 
-
 fn draw_graph(g: &graph::Graph) -> String {
     let mut svg = String::new();
 
@@ -82,9 +81,9 @@ fn main() {
 
     g.normalize();
 
-    svg += draw_graph(&g).as_str();
+    svg += svg::draw_box(0.0, 0.0, 1.0, 1.0, 0.01, "white", "black").as_str();
 
-    svg += svg::draw_box(0.0, 0.0, 1.0, 1.0, 0.01, "black").as_str();
+    svg += draw_graph(&g).as_str();
 
     svg += format!("{}\n", svg::end()).as_str();
 

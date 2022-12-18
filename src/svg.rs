@@ -37,10 +37,18 @@ pub fn line_to(v: Vector) -> String {
 }
 
 #[must_use]
-pub fn draw_box(x: f32, y: f32, width: f32, height: f32, stroke: f32, color: &str) -> String {
+pub fn draw_box(
+    x: f32,
+    y: f32,
+    width: f32,
+    height: f32,
+    stroke: f32,
+    fill_color: &str,
+    edge_color: &str,
+) -> String {
     format!(
         "<path d=\"M{x},{y} l0,{height} l{width},0 l0,-{height} z\" \
-        fill=\"none\" stroke=\"{color}\" stroke-width=\"{stroke}\"/>"
+        fill=\"{fill_color}\" stroke=\"{edge_color}\" stroke-width=\"{stroke}\"/>"
     )
 }
 
