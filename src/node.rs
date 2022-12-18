@@ -4,6 +4,7 @@ pub struct Node<'a> {
     pub x: f32,
     pub y: f32,
     pub name: &'a str,
+    pub color: &'a str,
     pub visited: bool,
     pub visible: bool,
 }

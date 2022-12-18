@@ -5,6 +5,18 @@ use std::collections::HashMap;
 
 use crate::node::Node;
 
+macro_rules! foobar_bool {
+    ($key:expr, $json:expr, $default:expr) => {
+        match $json.get($key) {
+            Some(x) => match x.as_bool() {
+                Some(x) => x,
+                None => $default,
+            },
+            None => $default,
+        }
+    };
+}
+
 pub struct Graph<'a> {
     pub nodes: HashMap<&'a str, Node<'a>>,
     pub edges: Vec<(&'a str, &'a str, bool)>,
@@ -22,13 +34,8 @@ impl<'a> Graph<'a> {
 
     pub fn register_node(&mut self, a: &'a str, style: &'a str) {
         let json: serde_json::Value = serde_json::from_str(style).unwrap();
-        match json.get("visible") {
-            Some(x) => match x.as_bool() {
-                Some(x) => self.nodes.get_mut(a).unwrap().visible = x,
-                None => {}
-            },
-            None => {}
-        }
+
+        self.nodes.get_mut(a).unwrap().visible = foobar_bool!("visible", json, true);
     }
 
     pub fn register_edge(&mut self, a: &'a str, b: &'a str, style: &'a str) {
@@ -57,6 +64,7 @@ impl<'a> Graph<'a> {
                 x: x1,
                 y: y1,
                 name: a,
+                color: "black",
                 visited: false,
                 visible: true,
             },
@@ -68,6 +76,7 @@ impl<'a> Graph<'a> {
                 x: x2,
                 y: y2,
                 name: b,
+                color: "black",
                 visited: false,
                 visible: true,
             },
