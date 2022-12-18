@@ -33,8 +33,6 @@ impl<'a> Graph<'a> {
                 },
                 None => {}
             }
-
-            println!("{:?}", json);
         }
 
         let x1 = self.rng.gen_range(0.0..1.0);
@@ -49,6 +47,7 @@ impl<'a> Graph<'a> {
                 y: y1,
                 name: a,
                 visited: false,
+                visible: true,
             },
         );
 
@@ -59,6 +58,7 @@ impl<'a> Graph<'a> {
                 y: y2,
                 name: b,
                 visited: false,
+                visible: true,
             },
         );
 
