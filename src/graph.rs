@@ -20,11 +20,22 @@ impl<'a> Graph<'a> {
         }
     }
 
-    pub fn register_edge(&mut self, a: &'a str, b: &'a str, c: &'a str) {
+    pub fn register_node(&mut self, a: &'a str, style: &'a str) {
+        let json: serde_json::Value = serde_json::from_str(style).unwrap();
+        match json.get("visible") {
+            Some(x) => match x.as_bool() {
+                Some(x) => self.nodes.get_mut(a).unwrap().visible = x,
+                None => {}
+            },
+            None => {}
+        }
+    }
+
+    pub fn register_edge(&mut self, a: &'a str, b: &'a str, style: &'a str) {
         let mut visible = true;
 
-        if c != "" {
-            let json: serde_json::Value = serde_json::from_str(c).unwrap();
+        if style != "" {
+            let json: serde_json::Value = serde_json::from_str(style).unwrap();
 
             match json.get("visible") {
                 Some(x) => match x.as_bool() {

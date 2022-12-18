@@ -67,6 +67,9 @@ pub fn draw_label_multiline(
     let mut label_width = 0.0;
     let mut label_height = 0.0;
 
+    let y =
+        y + font_size - line_height * label.split("\\n").collect::<Vec<&str>>().len() as f32 / 2.0;
+
     for line in label.split("\\n") {
         let font_data = include_bytes!("../LiberationSans-Regular.ttf");
         let font = Font::try_from_bytes(font_data as &[u8]).expect("Error constructing Font");

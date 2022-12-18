@@ -46,9 +46,15 @@ fn main() {
 
     for line in contents.split("\n") {
         if line != "" {
-            match line.split("-").collect::<Vec<&str>>()[..] {
-                [a, b] => g.register_edge(a, b, ""),
-                [a, b, c] => g.register_edge(a, b, c),
+            let (content, style) = match line.split("|").collect::<Vec<&str>>()[..] {
+                [content] => (content, ""),
+                [content, style] => (content, style),
+                _ => panic!("Failed to process text file."),
+            };
+
+            match content.split("-").collect::<Vec<&str>>()[..] {
+                [a] => g.register_node(a, style),
+                [a, b] => g.register_edge(a, b, style),
                 _ => panic!("Failed to process text file."),
             }
         }
