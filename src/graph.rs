@@ -27,14 +27,47 @@ impl<'a> Graph<'a> {
         }
     }
 
-    pub fn register_node(&mut self, a: &'a str, style: &'a str) {
+    fn retrieve_bool(&self, style: &str, key: &str, default: bool) -> bool {
         let json: serde_json::Value = serde_json::from_str(style).unwrap();
 
-        self.nodes.get_mut(a).unwrap().visible = foobar_bool!("visible", json, true);
+        match json.get(key) {
+            Some(x) => match x.as_bool() {
+                Some(x) => x,
+                None => default,
+            },
+            None => default,
+        }
+    }
+
+    fn retrieve_string(&self, style: &str, key: &str, default: &'a str) -> String {
+        let json: serde_json::Value = serde_json::from_str(style).unwrap();
+
+        let ret = match json.get(key) {
+            Some(x) => match x.as_str() {
+                Some(x) => x,
+                None => default,
+            },
+            None => default,
+        };
+
+        ret.to_string()
+    }
+
+    pub fn register_node(&mut self, a: &'a str, style: &'a str) {
+        self.nodes
+            .get_mut(a)
+            .expect("Could not find node. Edges must be defined before nodes can be configured.")
+            .visible = self.retrieve_bool(style, "visible", true);
+
+        self.nodes
+            .get_mut(a)
+            .expect("Could not find node. Edges must be defined before nodes can be configured.")
+            .color = self.retrieve_string(style, "color", "green");
     }
 
     pub fn register_edge(&mut self, a: &'a str, b: &'a str, style: &'a str) {
         let mut visible = true;
+        let mut length = 0.3;
 
         if style != "" {
             let json: serde_json::Value = serde_json::from_str(style).unwrap();
@@ -42,6 +75,14 @@ impl<'a> Graph<'a> {
             match json.get("visible") {
                 Some(x) => match x.as_bool() {
                     Some(x) => visible = x,
+                    None => {}
+                },
+                None => {}
+            }
+
+            match json.get("length") {
+                Some(x) => match x.as_f64() {
+                    Some(x) => length = x,
                     None => {}
                 },
                 None => {}
@@ -59,7 +100,7 @@ impl<'a> Graph<'a> {
                 x: x1,
                 y: y1,
                 name: a,
-                color: "black",
+                color: "black".to_string(),
                 visited: false,
                 visible: true,
             },
@@ -71,16 +112,16 @@ impl<'a> Graph<'a> {
                 x: x2,
                 y: y2,
                 name: b,
-                color: "black",
+                color: "black".to_string(),
                 visited: false,
                 visible: true,
             },
         );
 
         self.edges.push(Edge {
-            a: a,
-            b: b,
-            visible: visible,
+            a,
+            b,
+            visible,
             length: length as f32,
         });
     }
