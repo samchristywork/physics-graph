@@ -23,7 +23,6 @@ fn draw_graph(g: &graph::Graph) -> String {
         svg += svg::draw_line(
             vector::Vector { x: a.x, y: a.y },
             vector::Vector { x: b.x, y: b.y },
-            "black",
         )
         .as_str();
     }
@@ -79,7 +78,7 @@ fn main() {
 
     svg += draw_graph(&g).as_str();
 
-    svg += svg::draw_box(0.0, 0.0, 1.0, 1.0, 0.01, "red").as_str();
+    svg += svg::draw_box(0.0, 0.0, 1.0, 1.0, 0.01, "black").as_str();
 
     svg += format!("{}\n", svg::end()).as_str();
 

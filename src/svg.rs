@@ -1,3 +1,5 @@
+use rusttype::{point, Font, Scale};
+
 use crate::vector::Vector;
 
 #[must_use]
@@ -14,7 +16,7 @@ pub fn start(x: f32, y: f32, width: f32, height: f32) -> String {
 }
 
 #[must_use]
-pub fn draw_line(start: Vector, end: Vector, color: &str) -> String {
+pub fn draw_line(start: Vector, end: Vector) -> String {
     let x1 = start.x;
     let y1 = start.y;
     let x2 = end.x;
@@ -22,7 +24,7 @@ pub fn draw_line(start: Vector, end: Vector, color: &str) -> String {
 
     format!(
         "<line x1=\"{x1}\" y1=\"{y1}\" x2=\"{x2}\" y2=\"{y2}\" \
-        style=\"stroke:{color};stroke-width:0.004\" />"
+        style=\"stroke:black;stroke-width:0.002\" />"
     )
 }
 
