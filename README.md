@@ -42,6 +42,8 @@ examples to see current usage.
 <img src="./screenshots/quad.svg" width=250></img>
 <img src="./screenshots/simple.svg" width=250></img>
 <img src="./screenshots/tri.svg" width=250></img>
+<img src="./screenshots/invisible_edge.svg" width=250></img>
+<img src="./screenshots/medium.svg" width=250></img>
 
 ## License
 
