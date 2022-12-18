@@ -13,12 +13,12 @@ fn draw_graph(g: &graph::Graph) -> String {
     let mut svg = String::new();
 
     for edge in &g.edges {
-        if edge.2 == false {
+        if edge.visible == false {
             continue;
         }
 
-        let a = g.nodes.get(edge.0).unwrap();
-        let b = g.nodes.get(edge.1).unwrap();
+        let a = g.nodes.get(edge.a).unwrap();
+        let b = g.nodes.get(edge.b).unwrap();
 
         svg += svg::draw_line(
             vector::Vector { x: a.x, y: a.y },

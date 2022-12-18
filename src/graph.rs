@@ -5,21 +5,16 @@ use std::collections::HashMap;
 
 use crate::node::Node;
 
-macro_rules! foobar_bool {
-    ($key:expr, $json:expr, $default:expr) => {
-        match $json.get($key) {
-            Some(x) => match x.as_bool() {
-                Some(x) => x,
-                None => $default,
-            },
-            None => $default,
-        }
-    };
+pub struct Edge<'a> {
+    pub a: &'a str,
+    pub b: &'a str,
+    pub visible: bool,
+    length: f32,
 }
 
 pub struct Graph<'a> {
     pub nodes: HashMap<&'a str, Node<'a>>,
-    pub edges: Vec<(&'a str, &'a str, bool)>,
+    pub edges: Vec<Edge<'a>>,
     rng: Lcg64Xsh32,
 }
 
@@ -82,7 +77,12 @@ impl<'a> Graph<'a> {
             },
         );
 
-        self.edges.push((a, b, visible));
+        self.edges.push(Edge {
+            a: a,
+            b: b,
+            visible: visible,
+            length: length as f32,
+        });
     }
 
     pub fn iterate(&mut self) {
@@ -116,10 +116,10 @@ impl<'a> Graph<'a> {
 
         // Simulate Hooke's law
         for edge in self.edges.iter() {
-            let length = 0.3;
+            let length = edge.length;
 
-            let a = self.nodes.get(edge.0).unwrap();
-            let b = self.nodes.get(edge.1).unwrap();
+            let a = self.nodes.get(edge.a).unwrap();
+            let b = self.nodes.get(edge.b).unwrap();
             let xdelta = a.x - b.x;
             let ydelta = a.y - b.y;
             let dist = (xdelta * xdelta + ydelta * ydelta).sqrt();
@@ -128,12 +128,12 @@ impl<'a> Graph<'a> {
 
             let f = -0.1 * x;
 
-            let a = self.nodes.get_mut(edge.0).unwrap();
+            let a = self.nodes.get_mut(edge.a).unwrap();
 
             a.x += xdelta * f;
             a.y += ydelta * f;
 
-            let b = self.nodes.get_mut(edge.1).unwrap();
+            let b = self.nodes.get_mut(edge.b).unwrap();
 
             b.x += -xdelta * f;
             b.y += -ydelta * f;
@@ -185,8 +185,8 @@ impl<'a> Graph<'a> {
             let mut cont = false;
 
             for edge in self.edges.iter_mut() {
-                let a = self.nodes.get(edge.0).unwrap();
-                let b = self.nodes.get(edge.1).unwrap();
+                let a = self.nodes.get(edge.a).unwrap();
+                let b = self.nodes.get(edge.b).unwrap();
 
                 if a.visited && b.visited {
                     continue;
@@ -196,10 +196,10 @@ impl<'a> Graph<'a> {
                     continue;
                 }
 
-                let a = self.nodes.get_mut(edge.0).unwrap();
+                let a = self.nodes.get_mut(edge.a).unwrap();
                 a.visited = true;
 
-                let b = self.nodes.get_mut(edge.1).unwrap();
+                let b = self.nodes.get_mut(edge.b).unwrap();
                 b.visited = true;
                 cont = true;
             }
