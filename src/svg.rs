@@ -88,12 +88,22 @@ pub fn draw_label_multiline(
         let text_width = {
             let min_x = glyphs
                 .first()
-                .map(|g| g.pixel_bounding_box().unwrap().min.x)
-                .unwrap();
+                .map(|g| {
+                    g.pixel_bounding_box()
+                        .expect("Could not get text bounding box.")
+                        .min
+                        .x
+                })
+                .expect("Could not calculate text dimensions.");
             let max_x = glyphs
                 .last()
-                .map(|g| g.pixel_bounding_box().unwrap().max.x)
-                .unwrap();
+                .map(|g| {
+                    g.pixel_bounding_box()
+                        .expect("Could not get text bounding box.")
+                        .max
+                        .x
+                })
+                .expect("Could not calculate text dimensions.");
             (max_x - min_x) as f32 / 600.0 + 0.02
         };
 

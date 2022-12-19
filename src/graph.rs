@@ -19,7 +19,8 @@ pub struct Graph<'a> {
 }
 
 impl<'a> Graph<'a> {
-    #[must_use] pub fn new() -> Self {
+    #[must_use]
+    pub fn new() -> Self {
         Self {
             nodes: HashMap::new(),
             edges: Vec::new(),
@@ -28,7 +29,7 @@ impl<'a> Graph<'a> {
     }
 
     fn retrieve_bool(&self, style: &str, key: &str, default: bool) -> bool {
-        let json: serde_json::Value = serde_json::from_str(style).unwrap();
+        let json: serde_json::Value = serde_json::from_str(style).expect("Could not parse JSON.");
 
         match json.get(key) {
             Some(x) => match x.as_bool() {
@@ -40,7 +41,7 @@ impl<'a> Graph<'a> {
     }
 
     fn retrieve_string(&self, style: &str, key: &str, default: &'a str) -> String {
-        let json: serde_json::Value = serde_json::from_str(style).unwrap();
+        let json: serde_json::Value = serde_json::from_str(style).expect("Could not parse JSON.");
 
         let ret = match json.get(key) {
             Some(x) => match x.as_str() {
@@ -70,7 +71,8 @@ impl<'a> Graph<'a> {
         let mut length = 0.3;
 
         if !style.is_empty() {
-            let json: serde_json::Value = serde_json::from_str(style).unwrap();
+            let json: serde_json::Value =
+                serde_json::from_str(style).expect("Could not parse JSON.");
 
             match json.get("visible") {
                 Some(x) => match x.as_bool() {
@@ -134,7 +136,10 @@ impl<'a> Graph<'a> {
         }
 
         // Simulate repulsion
-        node_data.sort_by(|a, b| a.partial_cmp(b).unwrap());
+        node_data.sort_by(|a, b| {
+            a.partial_cmp(b)
+                .expect("Could not compare node coordinates.")
+        });
 
         for mut node in &mut self.nodes {
             for other in &node_data {
@@ -159,8 +164,8 @@ impl<'a> Graph<'a> {
         for edge in &self.edges {
             let length = edge.length;
 
-            let a = self.nodes.get(edge.a).unwrap();
-            let b = self.nodes.get(edge.b).unwrap();
+            let a = self.nodes.get(edge.a).expect("Could not get named node.");
+            let b = self.nodes.get(edge.b).expect("Could not get named node.");
             let xdelta = a.x - b.x;
             let ydelta = a.y - b.y;
             let dist = xdelta.hypot(ydelta);
@@ -169,12 +174,18 @@ impl<'a> Graph<'a> {
 
             let f = -0.1 * x;
 
-            let a = self.nodes.get_mut(edge.a).unwrap();
+            let a = self
+                .nodes
+                .get_mut(edge.a)
+                .expect("Could not get named node.");
 
             a.x += xdelta * f;
             a.y += ydelta * f;
 
-            let b = self.nodes.get_mut(edge.b).unwrap();
+            let b = self
+                .nodes
+                .get_mut(edge.b)
+                .expect("Could not get named node.");
 
             b.x += -xdelta * f;
             b.y += -ydelta * f;
@@ -182,10 +193,34 @@ impl<'a> Graph<'a> {
     }
 
     pub fn normalize(&mut self) {
-        let mut minx = self.nodes.iter().next().unwrap().1.x;
-        let mut miny = self.nodes.iter().next().unwrap().1.y;
-        let mut maxx = self.nodes.iter().next().unwrap().1.x;
-        let mut maxy = self.nodes.iter().next().unwrap().1.y;
+        let mut minx = self
+            .nodes
+            .iter()
+            .next()
+            .expect("Could not get first node.")
+            .1
+            .x;
+        let mut miny = self
+            .nodes
+            .iter()
+            .next()
+            .expect("Could not get first node.")
+            .1
+            .y;
+        let mut maxx = self
+            .nodes
+            .iter()
+            .next()
+            .expect("Could not get first node.")
+            .1
+            .x;
+        let mut maxy = self
+            .nodes
+            .iter()
+            .next()
+            .expect("Could not get first node.")
+            .1
+            .y;
 
         for node in &self.nodes {
             if node.1.x < minx {
@@ -220,14 +255,19 @@ impl<'a> Graph<'a> {
             node.1.visited = false;
         }
 
-        self.nodes.iter_mut().next().unwrap().1.visited = true;
+        self.nodes
+            .iter_mut()
+            .next()
+            .expect("Could not get first node.")
+            .1
+            .visited = true;
 
         loop {
             let mut cont = false;
 
             for edge in &mut self.edges {
-                let a = self.nodes.get(edge.a).unwrap();
-                let b = self.nodes.get(edge.b).unwrap();
+                let a = self.nodes.get(edge.a).expect("Could not get named node.");
+                let b = self.nodes.get(edge.b).expect("Could not get named node.");
 
                 if a.visited && b.visited {
                     continue;
@@ -237,10 +277,16 @@ impl<'a> Graph<'a> {
                     continue;
                 }
 
-                let a = self.nodes.get_mut(edge.a).unwrap();
+                let a = self
+                    .nodes
+                    .get_mut(edge.a)
+                    .expect("Could not get named node.");
                 a.visited = true;
 
-                let b = self.nodes.get_mut(edge.b).unwrap();
+                let b = self
+                    .nodes
+                    .get_mut(edge.b)
+                    .expect("Could not get named node.");
                 b.visited = true;
                 cont = true;
             }
