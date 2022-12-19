@@ -16,8 +16,8 @@ fn draw_graph(g: &graph::Graph) -> String {
             continue;
         }
 
-        let a = g.nodes.get(edge.a).unwrap();
-        let b = g.nodes.get(edge.b).unwrap();
+        let a = g.nodes.get(edge.a).expect("Could not get named node.");
+        let b = g.nodes.get(edge.b).expect("Could not get named node.");
 
         svg += svg::draw_line(
             vector::Vector { x: a.x, y: a.y },
@@ -35,11 +35,19 @@ fn draw_graph(g: &graph::Graph) -> String {
 }
 
 fn main() {
-    let filename = env::args().nth(1).unwrap();
+    let filename = match env::args().nth(1) {
+        Some(e) => e,
+        None => {
+            println!("Please specify a filename to use as input.");
+            return;
+        }
+    };
 
-    let mut input_file = File::open(filename).unwrap();
+    let mut input_file = File::open(filename).expect("Could not open file.");
     let mut contents = String::new();
-    input_file.read_to_string(&mut contents).unwrap();
+    input_file
+        .read_to_string(&mut contents)
+        .expect("Could not read file.");
 
     let mut g = graph::Graph::new();
 
@@ -70,7 +78,7 @@ fn main() {
         ),
     };
 
-    let mut output_file = File::create("out.svg").unwrap();
+    let mut output_file = File::create("out.svg").expect("Could not create output file.");
 
     let mut svg = String::new();
     svg += format!("{}\n", svg::start(0.0, 0.0, 1.0, 1.0)).as_str();
@@ -87,5 +95,7 @@ fn main() {
 
     svg += format!("{}\n", svg::end()).as_str();
 
-    output_file.write(svg.as_bytes()).unwrap();
+    output_file
+        .write(svg.as_bytes())
+        .expect("Could not write to output file.");
 }
