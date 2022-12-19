@@ -19,7 +19,7 @@ pub struct Graph<'a> {
 }
 
 impl<'a> Graph<'a> {
-    pub fn new() -> Self {
+    #[must_use] pub fn new() -> Self {
         Self {
             nodes: HashMap::new(),
             edges: Vec::new(),
@@ -69,7 +69,7 @@ impl<'a> Graph<'a> {
         let mut visible = true;
         let mut length = 0.3;
 
-        if style != "" {
+        if !style.is_empty() {
             let json: serde_json::Value = serde_json::from_str(style).unwrap();
 
             match json.get("visible") {
@@ -136,7 +136,7 @@ impl<'a> Graph<'a> {
         // Simulate repulsion
         node_data.sort_by(|a, b| a.partial_cmp(b).unwrap());
 
-        for mut node in self.nodes.iter_mut() {
+        for mut node in &mut self.nodes {
             for other in &node_data {
                 if node.1.name == other.2 {
                     continue;
@@ -144,7 +144,7 @@ impl<'a> Graph<'a> {
 
                 let xdist = node.1.x - other.0;
                 let ydist = node.1.y - other.1;
-                let dist_2 = xdist * xdist + ydist * ydist;
+                let dist_2 = xdist.mul_add(xdist, ydist * ydist);
                 let force = 0.0003 / dist_2;
 
                 let x_component = xdist / dist_2.sqrt();
@@ -156,14 +156,14 @@ impl<'a> Graph<'a> {
         }
 
         // Simulate Hooke's law
-        for edge in self.edges.iter() {
+        for edge in &self.edges {
             let length = edge.length;
 
             let a = self.nodes.get(edge.a).unwrap();
             let b = self.nodes.get(edge.b).unwrap();
             let xdelta = a.x - b.x;
             let ydelta = a.y - b.y;
-            let dist = (xdelta * xdelta + ydelta * ydelta).sqrt();
+            let dist = xdelta.hypot(ydelta);
 
             let x = dist - length;
 
@@ -187,7 +187,7 @@ impl<'a> Graph<'a> {
         let mut maxx = self.nodes.iter().next().unwrap().1.x;
         let mut maxy = self.nodes.iter().next().unwrap().1.y;
 
-        for node in self.nodes.iter() {
+        for node in &self.nodes {
             if node.1.x < minx {
                 minx = node.1.x;
             }
@@ -202,7 +202,7 @@ impl<'a> Graph<'a> {
             }
         }
 
-        for node in self.nodes.iter_mut() {
+        for node in &mut self.nodes {
             node.1.x -= minx;
             node.1.y -= miny;
             node.1.x *= 1.0 / (maxx - minx);
@@ -216,7 +216,7 @@ impl<'a> Graph<'a> {
     }
 
     pub fn is_fully_connected(&mut self) -> Result<(), (Vec<&str>, Vec<&str>)> {
-        for node in self.nodes.iter_mut() {
+        for node in &mut self.nodes {
             node.1.visited = false;
         }
 
@@ -225,7 +225,7 @@ impl<'a> Graph<'a> {
         loop {
             let mut cont = false;
 
-            for edge in self.edges.iter_mut() {
+            for edge in &mut self.edges {
                 let a = self.nodes.get(edge.a).unwrap();
                 let b = self.nodes.get(edge.b).unwrap();
 
@@ -252,19 +252,19 @@ impl<'a> Graph<'a> {
 
         let mut unconnected = Vec::new();
         for node in &self.nodes {
-            if node.1.visited == false {
+            if !node.1.visited {
                 unconnected.push(*node.0);
             }
         }
 
         let mut connected = Vec::new();
         for node in &self.nodes {
-            if node.1.visited == true {
+            if node.1.visited {
                 connected.push(*node.0);
             }
         }
 
-        if unconnected.len() > 0 {
+        if !unconnected.is_empty() {
             return std::result::Result::Err((connected, unconnected));
         }
 

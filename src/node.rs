@@ -10,16 +10,16 @@ pub struct Node<'a> {
 }
 
 impl Node<'_> {
-    pub fn draw(&self) -> String {
+    #[must_use] pub fn draw(&self) -> String {
         let text_color = self.color.as_str();
 
-        if self.visible == false {
-            return "".to_string();
+        if !self.visible {
+            return String::new();
         }
 
         format!(
             "{}\n",
-            svg::draw_label_multiline(self.x, self.y, 0.05, text_color, &self.name)
+            svg::draw_label_multiline(self.x, self.y, 0.05, text_color, self.name)
         )
     }
 }

@@ -12,7 +12,7 @@ fn draw_graph(g: &graph::Graph) -> String {
     let mut svg = String::new();
 
     for edge in &g.edges {
-        if edge.visible == false {
+        if !edge.visible {
             continue;
         }
 
@@ -43,15 +43,15 @@ fn main() {
 
     let mut g = graph::Graph::new();
 
-    for line in contents.split("\n") {
-        if line != "" {
-            let (content, style) = match line.split("|").collect::<Vec<&str>>()[..] {
+    for line in contents.split('\n') {
+        if !line.is_empty() {
+            let (content, style) = match line.split('|').collect::<Vec<&str>>()[..] {
                 [content] => (content, ""),
                 [content, style] => (content, style),
                 _ => panic!("Failed to process text file."),
             };
 
-            match content.split("-").collect::<Vec<&str>>()[..] {
+            match content.split('-').collect::<Vec<&str>>()[..] {
                 [a] => g.register_node(a, style),
                 [a, b] => g.register_edge(a, b, style),
                 _ => panic!("Failed to process text file."),
