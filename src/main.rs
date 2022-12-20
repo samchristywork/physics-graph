@@ -35,12 +35,11 @@ fn draw_graph(g: &graph::Graph) -> String {
 }
 
 fn main() {
-    let filename = match env::args().nth(1) {
-        Some(e) => e,
-        None => {
-            println!("Please specify a filename to use as input.");
-            return;
-        }
+    let filename = if let Some(e) = env::args().nth(1) {
+        e
+    } else {
+        println!("Please specify a filename to use as input.");
+        return;
     };
 
     let mut input_file = File::open(filename).expect("Could not open file.");
@@ -96,6 +95,6 @@ fn main() {
     svg += format!("{}\n", svg::end()).as_str();
 
     output_file
-        .write(svg.as_bytes())
+        .write_all(svg.as_bytes())
         .expect("Could not write to output file.");
 }

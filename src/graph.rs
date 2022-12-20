@@ -18,6 +18,12 @@ pub struct Graph<'a> {
     rng: Lcg64Xsh32,
 }
 
+impl<'a> Default for Graph<'a> {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl<'a> Graph<'a> {
     #[must_use]
     pub fn new() -> Self {
@@ -31,25 +37,19 @@ impl<'a> Graph<'a> {
     fn retrieve_bool(&self, style: &str, key: &str, default: bool) -> bool {
         let json: serde_json::Value = serde_json::from_str(style).expect("Could not parse JSON.");
 
-        match json.get(key) {
-            Some(x) => match x.as_bool() {
-                Some(x) => x,
-                None => default,
-            },
+        json.get(key).map_or(default, |x| match x.as_bool() {
+            Some(x) => x,
             None => default,
-        }
+        })
     }
 
     fn retrieve_string(&self, style: &str, key: &str, default: &'a str) -> String {
         let json: serde_json::Value = serde_json::from_str(style).expect("Could not parse JSON.");
 
-        let ret = match json.get(key) {
-            Some(x) => match x.as_str() {
-                Some(x) => x,
-                None => default,
-            },
+        let ret = json.get(key).map_or(default, |x| match x.as_str() {
+            Some(x) => x,
             None => default,
-        };
+        });
 
         ret.to_string()
     }
@@ -74,21 +74,15 @@ impl<'a> Graph<'a> {
             let json: serde_json::Value =
                 serde_json::from_str(style).expect("Could not parse JSON.");
 
-            match json.get("visible") {
-                Some(x) => match x.as_bool() {
-                    Some(x) => visible = x,
-                    None => {}
-                },
+            json.get("visible").map_or({}, |x| match x.as_bool() {
+                Some(x) => visible = x,
                 None => {}
-            }
+            });
 
-            match json.get("length") {
-                Some(x) => match x.as_f64() {
-                    Some(x) => length = x,
-                    None => {}
-                },
+            json.get("length").map_or({}, |x| match x.as_f64() {
+                Some(x) => length = x,
                 None => {}
-            }
+            });
         }
 
         let x1 = self.rng.gen_range(0.0..1.0);

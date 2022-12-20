@@ -75,8 +75,7 @@ pub fn draw_label_multiline(
     let mut label_width = 0.0;
     let mut label_height = 0.0;
 
-    let y =
-        y + font_size - line_height * label.split("\\n").collect::<Vec<&str>>().len() as f32 / 2.0;
+    let y = y + font_size - line_height * label.split("\\n").count() as f32 / 2.0;
 
     for line in label.split("\\n") {
         let font_data = include_bytes!("../LiberationSans-Regular.ttf");
@@ -136,16 +135,19 @@ pub fn draw_label_multiline(
 
 #[must_use]
 pub fn draw_box_with_label(
-    x: f32,
-    y: f32,
-    width: f32,
-    height: f32,
+    pos: (f32, f32),
+    size: (f32, f32),
     stroke: f32,
     font_size: f32,
     color: &str,
     font_color: &str,
     label: &str,
 ) -> String {
+    let x = pos.0;
+    let y = pos.1;
+    let width = size.0;
+    let height = size.1;
+
     format!(
         "<path d=\"M{x},{y} l0,{height} l{width},0 l0,-{height} z\" \
         fill=\"none\" stroke=\"{color}\" stroke-width=\"{stroke}\"/> \
