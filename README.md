@@ -1,4 +1,4 @@
-![Banner](https://s-christy.com/status-banner-service/physics-graph/banner-slim.svg)
+![Banner](https://s-christy.com/sbs/status-banner.svg?icon=maps/moving&hue=250&title=Physics%20Graph&description=Using%20Hooke%27s%20law%20to%20build%20graph%20visualizations)
 
 ## Overview
 
